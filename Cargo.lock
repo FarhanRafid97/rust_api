@@ -245,6 +245,8 @@ version = "0.1.0"
 dependencies = [
  "actix-web",
  "dotenvy",
+ "serde",
+ "serde_json",
  "sqlx",
  "uuid",
 ]
