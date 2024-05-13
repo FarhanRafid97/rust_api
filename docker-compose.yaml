@@ -1,0 +1,25 @@
+version: "3.4"
+
+services:
+  rust_api:
+    container_name: rust_api
+    hostname: "rust_api"
+    image: api_rust:dev
+    restart: always
+    ports:
+      - "8080:8080"
+  postgres:
+    image: postgres:latest
+    container_name: my_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: my_database
+      POSTGRES_USER: my_user
+      POSTGRES_PASSWORD: my_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
