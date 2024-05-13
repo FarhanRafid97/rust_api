@@ -47,7 +47,7 @@ pub async fn hello() -> impl Responder {
 
             HttpResponse::Ok()
                 .content_type("application/json")
-                .json(serde_json::json!({"result":response}))
+                .json(serde_json::json!({"status":200,"message":"success retrive data", "result":response}))
         }
         Err(err) => HttpResponse::InternalServerError().body(format!("Database Error: {}", err)),
     }
