@@ -1,9 +1,9 @@
+use crate::app_data::App_data;
 use crate::db::connection::Database;
-
 use actix_web::{get, HttpResponse, Responder};
 use serde::Serialize;
 
-use uuid::Uuid;
+use uuid::{timestamp::context, Uuid};
 
 #[derive(sqlx::FromRow, Debug)]
 pub struct SqlxUser {
@@ -51,4 +51,10 @@ pub async fn hello() -> impl Responder {
         }
         Err(err) => HttpResponse::InternalServerError().body(format!("Database Error: {}", err)),
     }
+}
+#[get("/home")]
+pub async fn home(data: actix_web::web::Data<App_data>) -> impl actix_web::Responder {
+    let context_tera = tera::Context::new();
+    let rendered = data.template.render("index.html", &context_tera).unwrap();
+    actix_web::HttpResponse::Ok().body(rendered)
 }
