@@ -59,7 +59,7 @@ pub async fn home(data: actix_web::web::Data<AppData>) -> impl actix_web::Respon
     let mut context_tera = tera::Context::new();
 
     context_tera.insert("title", "Hello world");
-    context_tera.insert("body", "Hello body");
+    context_tera.insert("body", "1 | Hello body");
     let rendered = data.template.render("index.html", &context_tera).unwrap();
     actix_web::HttpResponse::Ok().body(rendered)
 }

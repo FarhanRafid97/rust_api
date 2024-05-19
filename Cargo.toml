@@ -24,3 +24,11 @@ sqlx = { version = "0.7.4", features = [
 ] }
 tera = "1.19.1"
 actix-files = "0.6.5"
+
+
+[profile.release]
+panic = "unwind"  # Strip expensive panic clean-up logic
+codegen-units = 1 # Compile crates one after another so the compiler can optimize better
+lto = true        # Enables link to optimizations
+opt-level = "s"   # Optimize for binary size
+strip = true      # Remove debug symbols
