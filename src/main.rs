@@ -1,9 +1,9 @@
 pub mod app_data;
 mod controllers;
-use crate::app_data::App_data;
+use crate::app_data::AppData;
 use actix_web::{App, HttpServer};
 mod db;
-use routes::{hello, home};
+use routes::{hello, home, static_file};
 mod routes;
 
 use dotenvy::dotenv;
@@ -25,9 +25,10 @@ async fn main() -> std::io::Result<()> {
             }
         };
         App::new()
-            .app_data(actix_web::web::Data::new(App_data {
+            .app_data(actix_web::web::Data::new(AppData {
                 template: tera_data.clone(),
             }))
+            .service(static_file)
             .service(hello)
             .service(home)
     })

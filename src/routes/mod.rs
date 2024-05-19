@@ -1,14 +1,11 @@
-use crate::app_data::App_data;
+use crate::app_data::AppData;
 use crate::db::connection::Database;
-use actix_web::{get, HttpResponse, Responder};
+use actix_files as fs;
+use actix_web::http::header::{ContentDisposition, DispositionType};
+use actix_web::{get, Error, HttpRequest, HttpResponse, Responder};
 use serde::Serialize;
 
-struct Data {
-    title: String,
-    body: String,
-}
-
-use uuid::{timestamp::context, Uuid};
+use uuid::Uuid;
 
 #[derive(sqlx::FromRow, Debug)]
 pub struct SqlxUser {
@@ -58,11 +55,23 @@ pub async fn hello() -> impl Responder {
     }
 }
 #[get("/home")]
-pub async fn home(data: actix_web::web::Data<App_data>) -> impl actix_web::Responder {
+pub async fn home(data: actix_web::web::Data<AppData>) -> impl actix_web::Responder {
     let mut context_tera = tera::Context::new();
 
     context_tera.insert("title", "Hello world");
     context_tera.insert("body", "Hello body");
     let rendered = data.template.render("index.html", &context_tera).unwrap();
     actix_web::HttpResponse::Ok().body(rendered)
+}
+
+#[get("/assets/{filename:.*}")]
+async fn static_file(req: HttpRequest) -> Result<fs::NamedFile, Error> {
+    let path: std::path::PathBuf = req.match_info().query("filename").parse().unwrap();
+    let file = fs::NamedFile::open(path)?;
+    Ok(file
+        .use_last_modified(true)
+        .set_content_disposition(ContentDisposition {
+            disposition: DispositionType::Attachment,
+            parameters: vec![],
+        }))
 }

@@ -1,3 +1,3 @@
-pub struct App_data {
+pub struct AppData {
     pub template: tera::Tera,
 }
