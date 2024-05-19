@@ -3,6 +3,11 @@ use crate::db::connection::Database;
 use actix_web::{get, HttpResponse, Responder};
 use serde::Serialize;
 
+struct Data {
+    title: String,
+    body: String,
+}
+
 use uuid::{timestamp::context, Uuid};
 
 #[derive(sqlx::FromRow, Debug)]
@@ -54,7 +59,10 @@ pub async fn hello() -> impl Responder {
 }
 #[get("/home")]
 pub async fn home(data: actix_web::web::Data<App_data>) -> impl actix_web::Responder {
-    let context_tera = tera::Context::new();
+    let mut context_tera = tera::Context::new();
+
+    context_tera.insert("title", "Hello world");
+    context_tera.insert("body", "Hello body");
     let rendered = data.template.render("index.html", &context_tera).unwrap();
     actix_web::HttpResponse::Ok().body(rendered)
 }
